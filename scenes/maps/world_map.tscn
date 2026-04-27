@@ -1,0 +1,142 @@
+[gd_scene load_steps=6 format=3 uid="uid://worldmap001"]
+
+[ext_resource type="PackedScene" uid="uid://player001" path="res://scenes/player/player.tscn" id="1_player"]
+[ext_resource type="PackedScene" uid="uid://enemy001" path="res://scenes/enemies/enemy.tscn" id="2_enemy"]
+[ext_resource type="PackedScene" uid="uid://hud001" path="res://scenes/ui/hud.tscn" id="3_hud"]
+[ext_resource type="PackedScene" uid="uid://pause001" path="res://scenes/ui/pause_menu.tscn" id="3_pause"]
+[ext_resource type="Script" path="res://scripts/quiz/quiz_door.gd" id="4_door"]
+[ext_resource type="Script" path="res://scripts/maps/world_map.gd" id="5_map"]
+
+[node name="WorldMap" type="Node2D"]
+script = ExtResource("5_map")
+
+[node name="Player" parent="." instance=ExtResource("1_player")]
+position = Vector2(0, 0)
+
+[node name="HUD" parent="." instance=ExtResource("3_hud")]
+
+[node name="PauseMenu" parent="." instance=ExtResource("3_pause")]
+
+[node name="Enemies" type="Node2D" parent="."]
+
+[node name="Enemy1" parent="Enemies" instance=ExtResource("2_enemy")]
+position = Vector2(200, -100)
+enemy_name = "Strażnik Wiedzy"
+quiz_id = "informatyka"
+quiz_category = "informatyka"
+question_count = 3
+hp = 60
+max_hp = 60
+damage_on_wrong = 15
+xp_reward = 50
+body_color = Color(0.85, 0.25, 0.25, 1)
+shape_type = 0
+
+[node name="Enemy2" parent="Enemies" instance=ExtResource("2_enemy")]
+position = Vector2(-150, 200)
+enemy_name = "Mistrz Algorytmów"
+quiz_id = "informatyka"
+quiz_category = "informatyka"
+question_count = 4
+hp = 80
+max_hp = 80
+damage_on_wrong = 20
+xp_reward = 75
+body_color = Color(0.6, 0.2, 0.8, 1)
+shape_type = 2
+
+[node name="Enemy3" parent="Enemies" instance=ExtResource("2_enemy")]
+position = Vector2(300, 250)
+enemy_name = "Smok Bitowy"
+quiz_id = "informatyka"
+quiz_category = "informatyka"
+question_count = 5
+hp = 100
+max_hp = 100
+damage_on_wrong = 25
+xp_reward = 100
+body_color = Color(0.9, 0.5, 0.1, 1)
+shape_type = 4
+
+[node name="Enemy4" parent="Enemies" instance=ExtResource("2_enemy")]
+position = Vector2(-300, -200)
+enemy_name = "Golem Matematyczny"
+quiz_id = "matematyka"
+quiz_category = "matematyka"
+question_count = 3
+hp = 70
+max_hp = 70
+damage_on_wrong = 20
+xp_reward = 60
+body_color = Color(0.2, 0.7, 0.4, 1)
+shape_type = 3
+
+[node name="Doors" type="Node2D" parent="."]
+
+[node name="QuizDoor1" type="StaticBody2D" parent="Doors" groups=["interactable"]]
+position = Vector2(0, -250)
+collision_layer = 4
+collision_mask = 1
+script = ExtResource("4_door")
+quiz_id = "informatyka"
+quiz_category = "informatyka"
+required_correct = 2
+total_questions = 3
+door_name = "Brama Podstaw"
+locked_message = "Odpowiedz na pytania, by przejść..."
+door_color = Color(0.55, 0.35, 0.15, 1)
+door_width = 64.0
+door_height = 16.0
+
+[node name="Sprite2D" type="Sprite2D" parent="Doors/QuizDoor1"]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Doors/QuizDoor1"]
+
+[node name="InteractionHint" type="Label" parent="Doors/QuizDoor1"]
+offset_left = -60.0
+offset_top = -30.0
+offset_right = 60.0
+offset_bottom = -10.0
+text = "[E] Brama Podstaw"
+horizontal_alignment = 1
+visible = false
+
+[node name="DetectionArea" type="Area2D" parent="Doors/QuizDoor1"]
+collision_layer = 0
+collision_mask = 1
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Doors/QuizDoor1/DetectionArea"]
+
+[node name="QuizDoor2" type="StaticBody2D" parent="Doors" groups=["interactable"]]
+position = Vector2(400, 0)
+collision_layer = 4
+collision_mask = 1
+script = ExtResource("4_door")
+quiz_id = "matematyka"
+quiz_category = "matematyka"
+required_correct = 3
+total_questions = 5
+door_name = "Brama Zaawansowana"
+locked_message = "Tylko mistrzowie przejdą..."
+door_color = Color(0.3, 0.3, 0.5, 1)
+door_width = 16.0
+door_height = 64.0
+
+[node name="Sprite2D" type="Sprite2D" parent="Doors/QuizDoor2"]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Doors/QuizDoor2"]
+
+[node name="InteractionHint" type="Label" parent="Doors/QuizDoor2"]
+offset_left = -60.0
+offset_top = -30.0
+offset_right = 60.0
+offset_bottom = -10.0
+text = "[E] Brama Zaawansowana"
+horizontal_alignment = 1
+visible = false
+
+[node name="DetectionArea" type="Area2D" parent="Doors/QuizDoor2"]
+collision_layer = 0
+collision_mask = 1
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Doors/QuizDoor2/DetectionArea"]

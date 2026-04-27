@@ -1,0 +1,101 @@
+[gd_scene load_steps=2 format=3 uid="uid://quizpuzzle001"]
+
+[ext_resource type="Script" path="res://scripts/quiz/quiz_puzzle_controller.gd" id="1_puzzle"]
+
+[node name="QuizPuzzleUI" type="CanvasLayer"]
+layer = 15
+
+[node name="Root" type="Control" parent="."]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_puzzle")
+
+[node name="DimOverlay" type="ColorRect" parent="Root"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+color = Color(0, 0, 0, 0.6)
+
+[node name="Panel" type="PanelContainer" parent="Root"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -320.0
+offset_top = -210.0
+offset_right = 320.0
+offset_bottom = 210.0
+
+[node name="MarginContainer" type="MarginContainer" parent="Root/Panel"]
+layout_mode = 2
+theme_override_constants/margin_left = 20
+theme_override_constants/margin_top = 15
+theme_override_constants/margin_right = 20
+theme_override_constants/margin_bottom = 15
+
+[node name="VBoxContainer" type="VBoxContainer" parent="Root/Panel/MarginContainer"]
+layout_mode = 2
+theme_override_constants/separation = 10
+
+[node name="TitleLabel" type="Label" parent="Root/Panel/MarginContainer/VBoxContainer"]
+layout_mode = 2
+text = "Zagadka"
+horizontal_alignment = 1
+
+[node name="ProgressBar" type="ProgressBar" parent="Root/Panel/MarginContainer/VBoxContainer"]
+layout_mode = 2
+custom_minimum_size = Vector2(0, 16)
+value = 0.0
+
+[node name="ProgressLabel" type="Label" parent="Root/Panel/MarginContainer/VBoxContainer"]
+layout_mode = 2
+text = "0 / 3 poprawnych odpowiedzi"
+horizontal_alignment = 1
+
+[node name="QuestionLabel" type="RichTextLabel" parent="Root/Panel/MarginContainer/VBoxContainer"]
+layout_mode = 2
+custom_minimum_size = Vector2(0, 70)
+bbcode_enabled = true
+text = "Pytanie..."
+fit_content = true
+
+[node name="AnswersGrid" type="GridContainer" parent="Root/Panel/MarginContainer/VBoxContainer"]
+layout_mode = 2
+columns = 2
+theme_override_constants/h_separation = 10
+theme_override_constants/v_separation = 10
+
+[node name="AnswerBtn0" type="Button" parent="Root/Panel/MarginContainer/VBoxContainer/AnswersGrid"]
+layout_mode = 2
+size_flags_horizontal = 3
+custom_minimum_size = Vector2(260, 40)
+text = "Odpowiedz A"
+
+[node name="AnswerBtn1" type="Button" parent="Root/Panel/MarginContainer/VBoxContainer/AnswersGrid"]
+layout_mode = 2
+size_flags_horizontal = 3
+custom_minimum_size = Vector2(260, 40)
+text = "Odpowiedz B"
+
+[node name="AnswerBtn2" type="Button" parent="Root/Panel/MarginContainer/VBoxContainer/AnswersGrid"]
+layout_mode = 2
+size_flags_horizontal = 3
+custom_minimum_size = Vector2(260, 40)
+text = "Odpowiedz C"
+
+[node name="AnswerBtn3" type="Button" parent="Root/Panel/MarginContainer/VBoxContainer/AnswersGrid"]
+layout_mode = 2
+size_flags_horizontal = 3
+custom_minimum_size = Vector2(260, 40)
+text = "Odpowiedz D"
+
+[node name="FeedbackLabel" type="Label" parent="Root/Panel/MarginContainer/VBoxContainer"]
+layout_mode = 2
+horizontal_alignment = 1

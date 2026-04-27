@@ -1,0 +1,139 @@
+{
+  "name": "Matematyka",
+  "description": "Pytania z matematyki dyskretnej i podstaw",
+  "questions": [
+    {
+      "id": "mat_001",
+      "question": "Ile wynosi 2^10?",
+      "answers": ["512", "1024", "2048", "256"],
+      "correct_index": 1,
+      "difficulty": 1,
+      "category": "matematyka",
+      "explanation": "2^10 = 1024, ważna potęga w informatyce (1 KB)."
+    },
+    {
+      "id": "mat_002",
+      "question": "Co to jest liczba pierwsza?",
+      "answers": [
+        "Liczba podzielna przez 2",
+        "Liczba podzielna tylko przez 1 i siebie",
+        "Liczba ujemna",
+        "Liczba parzysta"
+      ],
+      "correct_index": 1,
+      "difficulty": 1,
+      "category": "matematyka",
+      "explanation": "Liczba pierwsza dzieli się bez reszty tylko przez 1 i samą siebie."
+    },
+    {
+      "id": "mat_003",
+      "question": "Ile wynosi silnia z 5 (5!)?",
+      "answers": ["60", "100", "120", "24"],
+      "correct_index": 2,
+      "difficulty": 2,
+      "category": "matematyka",
+      "explanation": "5! = 5 × 4 × 3 × 2 × 1 = 120."
+    },
+    {
+      "id": "mat_004",
+      "question": "Jaki jest wynik: log₂(64)?",
+      "answers": ["4", "5", "6", "8"],
+      "correct_index": 2,
+      "difficulty": 2,
+      "category": "matematyka",
+      "explanation": "2^6 = 64, więc log₂(64) = 6."
+    },
+    {
+      "id": "mat_005",
+      "question": "Co to jest graf Eulera?",
+      "answers": [
+        "Graf, w którym istnieje ścieżka przechodząca przez każdą krawędź dokładnie raz",
+        "Graf bez cykli",
+        "Graf pełny",
+        "Graf z wagami na krawędziach"
+      ],
+      "correct_index": 0,
+      "difficulty": 3,
+      "category": "matematyka",
+      "explanation": "Graf Eulera zawiera ścieżkę (lub cykl) przechodzącą przez każdą krawędź dokładnie raz."
+    },
+    {
+      "id": "mat_006",
+      "question": "Ile podzbiorów ma zbiór 4-elementowy?",
+      "answers": ["8", "12", "16", "4"],
+      "correct_index": 2,
+      "difficulty": 2,
+      "category": "matematyka",
+      "explanation": "Zbiór n-elementowy ma 2^n podzbiorów. 2^4 = 16."
+    },
+    {
+      "id": "mat_007",
+      "question": "Co to jest macierz jednostkowa?",
+      "answers": [
+        "Macierz z samymi jedynkami",
+        "Macierz kwadratowa z jedynkami na głównej przekątnej i zerami poza nią",
+        "Macierz 1x1",
+        "Macierz odwrotna"
+      ],
+      "correct_index": 1,
+      "difficulty": 3,
+      "category": "matematyka",
+      "explanation": "Macierz jednostkowa I ma 1 na przekątnej i 0 poza nią; A × I = A."
+    },
+    {
+      "id": "mat_008",
+      "question": "Jaka jest pochodna funkcji f(x) = x³?",
+      "answers": ["3x", "3x²", "x²", "x⁴/4"],
+      "correct_index": 1,
+      "difficulty": 2,
+      "category": "matematyka",
+      "explanation": "Pochodna x^n = n × x^(n-1), więc (x³)' = 3x²."
+    },
+    {
+      "id": "mat_009",
+      "question": "Ile to (n choose 2) dla n=10?",
+      "answers": ["20", "45", "50", "100"],
+      "correct_index": 1,
+      "difficulty": 3,
+      "category": "matematyka",
+      "explanation": "C(10,2) = 10! / (2! × 8!) = 45."
+    },
+    {
+      "id": "mat_010",
+      "question": "Co opisuje twierdzenie Pitagorasa?",
+      "answers": [
+        "a + b = c",
+        "a² + b² = c²",
+        "a × b = c²",
+        "a² - b² = c"
+      ],
+      "correct_index": 1,
+      "difficulty": 1,
+      "category": "matematyka",
+      "explanation": "W trójkącie prostokątnym suma kwadratów przyprostokątnych = kwadrat przeciwprostokątnej."
+    },
+    {
+      "id": "mat_011",
+      "question": "Co to jest NP-zupełność?",
+      "answers": [
+        "Problem, który da się rozwiązać w czasie wielomianowym",
+        "Problem, który jest co najmniej tak trudny jak najtrudniejsze problemy w NP",
+        "Problem nierozwiązywalny",
+        "Problem liniowy"
+      ],
+      "correct_index": 1,
+      "difficulty": 4,
+      "category": "matematyka",
+      "explanation": "Problem NP-zupełny to taki, do którego każdy problem z NP da się zredukować w czasie wielomianowym."
+    },
+    {
+      "id": "mat_012",
+      "question": "Ile wynosi suma ciągu arytmetycznego 1+2+3+...+100?",
+      "answers": ["5000", "5050", "10000", "10100"],
+      "correct_index": 1,
+      "difficulty": 2,
+      "category": "matematyka",
+      "explanation": "Wzór Gaussa: n(n+1)/2 = 100×101/2 = 5050."
+    }
+  ]
+}

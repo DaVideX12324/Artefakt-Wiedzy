@@ -1,0 +1,226 @@
+{
+  "name": "Informatyka",
+  "description": "Pytania z podstaw informatyki i programowania",
+  "questions": [
+    {
+      "id": "inf_001",
+      "question": "Jaka jest złożoność czasowa wyszukiwania binarnego?",
+      "answers": ["O(n)", "O(log n)", "O(n²)", "O(1)"],
+      "correct_index": 1,
+      "difficulty": 2,
+      "category": "informatyka",
+      "explanation": "Wyszukiwanie binarne dzieli zakres o połowę w każdym kroku, stąd O(log n)."
+    },
+    {
+      "id": "inf_002",
+      "question": "Co oznacza skrót RAM?",
+      "answers": ["Read Access Memory", "Random Access Memory", "Rapid Active Memory", "Real Allocation Memory"],
+      "correct_index": 1,
+      "difficulty": 1,
+      "category": "informatyka",
+      "explanation": "RAM = Random Access Memory (pamięć o dostępie swobodnym)."
+    },
+    {
+      "id": "inf_003",
+      "question": "Który z tych języków programowania jest kompilowany?",
+      "answers": ["Python", "JavaScript", "C++", "Ruby"],
+      "correct_index": 2,
+      "difficulty": 1,
+      "category": "informatyka",
+      "explanation": "C++ jest językiem kompilowanym do kodu maszynowego."
+    },
+    {
+      "id": "inf_004",
+      "question": "Co to jest rekurencja?",
+      "answers": ["Pętla for", "Funkcja wywołująca samą siebie", "Typ danych", "Operator logiczny"],
+      "correct_index": 1,
+      "difficulty": 1,
+      "category": "informatyka",
+      "explanation": "Rekurencja to technika, w której funkcja wywołuje samą siebie."
+    },
+    {
+      "id": "inf_005",
+      "question": "Ile bitów ma jeden bajt?",
+      "answers": ["4", "8", "16", "32"],
+      "correct_index": 1,
+      "difficulty": 1,
+      "category": "informatyka",
+      "explanation": "1 bajt = 8 bitów."
+    },
+    {
+      "id": "inf_006",
+      "question": "Która struktura danych działa na zasadzie FIFO?",
+      "answers": ["Stos (Stack)", "Kolejka (Queue)", "Drzewo (Tree)", "Graf (Graph)"],
+      "correct_index": 1,
+      "difficulty": 2,
+      "category": "informatyka",
+      "explanation": "Kolejka (Queue) działa na zasadzie First In, First Out."
+    },
+    {
+      "id": "inf_007",
+      "question": "Co robi operator XOR na dwóch bitach 1 i 1?",
+      "answers": ["1", "0", "2", "Błąd"],
+      "correct_index": 1,
+      "difficulty": 2,
+      "category": "informatyka",
+      "explanation": "XOR zwraca 0 gdy oba bity są takie same (1 XOR 1 = 0)."
+    },
+    {
+      "id": "inf_008",
+      "question": "Który algorytm sortowania ma najlepszą średnią złożoność?",
+      "answers": ["Bubble Sort O(n²)", "Merge Sort O(n log n)", "Selection Sort O(n²)", "Insertion Sort O(n²)"],
+      "correct_index": 1,
+      "difficulty": 3,
+      "category": "informatyka",
+      "explanation": "Merge Sort ma złożoność O(n log n) — optymalną dla sortowania porównawczego."
+    },
+    {
+      "id": "inf_009",
+      "question": "Co to jest deadlock w kontekście systemów operacyjnych?",
+      "answers": [
+        "Szybkie przełączanie wątków",
+        "Wzajemne blokowanie procesów czekających na zasoby",
+        "Technika optymalizacji pamięci",
+        "Typ systemu plików"
+      ],
+      "correct_index": 1,
+      "difficulty": 3,
+      "category": "informatyka",
+      "explanation": "Deadlock występuje gdy procesy wzajemnie blokują się, czekając na zasoby zajęte przez drugi proces."
+    },
+    {
+      "id": "inf_010",
+      "question": "Jaka jest różnica między TCP a UDP?",
+      "answers": [
+        "TCP jest szybszy niż UDP",
+        "TCP gwarantuje dostarczenie pakietów, UDP nie",
+        "UDP jest szyfrowany, TCP nie",
+        "Nie ma różnicy"
+      ],
+      "correct_index": 1,
+      "difficulty": 2,
+      "category": "informatyka",
+      "explanation": "TCP zapewnia niezawodne, uporządkowane dostarczanie; UDP jest szybsze ale bez gwarancji."
+    },
+    {
+      "id": "inf_011",
+      "question": "Co to jest polimorfizm w programowaniu obiektowym?",
+      "answers": [
+        "Ukrywanie implementacji",
+        "Dziedziczenie wielokrotne",
+        "Możliwość traktowania obiektów różnych klas przez wspólny interfejs",
+        "Tworzenie kopii obiektu"
+      ],
+      "correct_index": 2,
+      "difficulty": 3,
+      "category": "informatyka",
+      "explanation": "Polimorfizm pozwala na jednolite traktowanie obiektów różnych typów przez wspólny interfejs."
+    },
+    {
+      "id": "inf_012",
+      "question": "Co oznacza notacja Big-O?",
+      "answers": [
+        "Dokładny czas wykonania",
+        "Górne ograniczenie złożoności asymptotycznej",
+        "Minimalna ilość pamięci",
+        "Liczba linii kodu"
+      ],
+      "correct_index": 1,
+      "difficulty": 3,
+      "category": "informatyka",
+      "explanation": "Notacja Big-O opisuje górne ograniczenie złożoności algorytmu przy rosnącym rozmiarze danych."
+    },
+    {
+      "id": "inf_013",
+      "question": "Które drzewo gwarantuje O(log n) dla wstawiania i wyszukiwania?",
+      "answers": ["Drzewo binarne", "Drzewo AVL", "Lista jednokierunkowa", "Kopiec (Heap)"],
+      "correct_index": 1,
+      "difficulty": 4,
+      "category": "informatyka",
+      "explanation": "Drzewo AVL jest zbalansowanym BST gwarantującym O(log n) dla operacji."
+    },
+    {
+      "id": "inf_014",
+      "question": "Co to jest garbage collector?",
+      "answers": [
+        "Program antywirusowy",
+        "Mechanizm automatycznego zwalniania nieużywanej pamięci",
+        "Narzędzie do kompresji plików",
+        "System plików"
+      ],
+      "correct_index": 1,
+      "difficulty": 2,
+      "category": "informatyka",
+      "explanation": "Garbage collector automatycznie identyfikuje i zwalnia pamięć, która nie jest już używana."
+    },
+    {
+      "id": "inf_015",
+      "question": "Jaki jest wynik wyrażenia: 0xFF AND 0x0F?",
+      "answers": ["0xFF", "0x0F", "0xF0", "0x00"],
+      "correct_index": 1,
+      "difficulty": 4,
+      "category": "informatyka",
+      "explanation": "AND maskuje górne 4 bity: 11111111 AND 00001111 = 00001111 = 0x0F."
+    },
+    {
+      "id": "inf_016",
+      "question": "Co to jest normalizacja bazy danych?",
+      "answers": [
+        "Szyfrowanie danych",
+        "Proces organizacji danych w celu redukcji redundancji",
+        "Tworzenie kopii zapasowych",
+        "Kompresja tabel"
+      ],
+      "correct_index": 1,
+      "difficulty": 3,
+      "category": "informatyka",
+      "explanation": "Normalizacja to proces organizacji schematu bazy danych w celu minimalizacji redundancji i zależności."
+    },
+    {
+      "id": "inf_017",
+      "question": "W systemie binarnym, ile to 1010 + 0110?",
+      "answers": ["10000", "1100", "10100", "1111"],
+      "correct_index": 0,
+      "difficulty": 4,
+      "category": "informatyka",
+      "explanation": "1010 (10) + 0110 (6) = 10000 (16) w systemie binarnym."
+    },
+    {
+      "id": "inf_018",
+      "question": "Co to jest API?",
+      "answers": [
+        "Automatyczny Procesor Instrukcji",
+        "Application Programming Interface",
+        "Advanced Programming Input",
+        "Analiza Pakietów Internetowych"
+      ],
+      "correct_index": 1,
+      "difficulty": 1,
+      "category": "informatyka",
+      "explanation": "API (Application Programming Interface) to interfejs umożliwiający komunikację między programami."
+    },
+    {
+      "id": "inf_019",
+      "question": "Który wzorzec projektowy zapewnia jedną globalną instancję klasy?",
+      "answers": ["Observer", "Factory", "Singleton", "Strategy"],
+      "correct_index": 2,
+      "difficulty": 3,
+      "category": "informatyka",
+      "explanation": "Singleton gwarantuje istnienie dokładnie jednej instancji klasy z globalnym dostępem."
+    },
+    {
+      "id": "inf_020",
+      "question": "Co to jest hashing i do czego służy?",
+      "answers": [
+        "Sortowanie danych",
+        "Mapowanie danych na wartości stałej długości dla szybkiego wyszukiwania",
+        "Szyfrowanie asymetryczne",
+        "Kompresja obrazów"
+      ],
+      "correct_index": 1,
+      "difficulty": 3,
+      "category": "informatyka",
+      "explanation": "Hashing mapuje dane na wartość (hash) stałej długości — używany w tablicach hashowych, kryptografii itp."
+    }
+  ]
+}
