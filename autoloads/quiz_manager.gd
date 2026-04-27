@@ -2,24 +2,27 @@ extends Node
 
 ## Zarządza bazą pytań quizowych, ładowaniem z JSON i walidacją odpowiedzi.
 ## Oddziela warstwę merytoryczną od prezentacji — pytania ładowane z plików JSON.
+##
+## Obsługiwane typy pytań (pole "type" w JSON):
+##   "multiple_choice" — klasyczny wybór jednej z N odpowiedzi (domyślny)
+##   "true_false"      — prawda / fałsz
+##   "fill_tiles"      — uzupełnianie luk kafelkami z puli
+##   "fill_text"       — wpisanie słowa/frazy (z opcjonalnym prefilled_pattern)
+##   "matching"        — łączenie lewej i prawej kolumny w pary
+##
+## Format answer_current() — player_answer: Dictionary:
+##   multiple_choice : { "index": int }
+##   true_false      : { "value": bool }
+##   fill_text       : { "text": String }
+##   fill_tiles      : { "placements": { "0": "wartość", "1": "wartość", ... } }
+##   matching        : { "pairs": [ { "left_index": int, "right_index": int }, ... ] }
 
 signal quiz_loaded(quiz_id: String)
 signal question_answered(correct: bool, question_data: Dictionary)
 signal quiz_completed(quiz_id: String, score: int, total: int)
 
-## Struktura pytania:
-## {
-##   "id": "q001",
-##   "question": "Treść pytania",
-##   "answers": ["A", "B", "C", "D"],
-##   "correct_index": 0,
-##   "difficulty": 1,        # 1-5
-##   "category": "informatyka",
-##   "explanation": "Opcjonalne wyjaśnienie"
-## }
-
-var _quizzes: Dictionary = {}          # quiz_id -> Array[Dictionary]
-var _answered_questions: Dictionary = {} # question_id -> { correct: bool, times: int }
+var _quizzes: Dictionary = {}           # quiz_id -> Array[Dictionary]
+var _answered_questions: Dictionary = {} # question_id -> { "correct": int, "wrong": int }
 var _current_quiz_id: String = ""
 var _current_questions: Array = []
 var _current_question_index: int = 0
@@ -29,6 +32,10 @@ var _current_score: int = 0
 func _ready() -> void:
 	_load_all_quizzes()
 
+
+# ---------------------------------------------------------------------------
+# Ładowanie quizów
+# ---------------------------------------------------------------------------
 
 ## Ładuje wszystkie pliki .json z folderu res://resources/quizzes/
 func _load_all_quizzes() -> void:
@@ -69,8 +76,18 @@ func _load_quiz_file(path: String, quiz_id: String) -> void:
 		_quizzes[quiz_id] = data
 
 
-## Zwraca listę pytań przefiltrowaną wg trudności
-func get_questions(quiz_id: String, difficulty_range: Vector2i = Vector2i(1, 5), count: int = 5) -> Array:
+# ---------------------------------------------------------------------------
+# Pobieranie pytań
+# ---------------------------------------------------------------------------
+
+## Zwraca przefiltrowaną i przetasowaną listę pytań.
+## allowed_types — pusta tablica = wszystkie typy; np. ["multiple_choice", "true_false"]
+func get_questions(
+	quiz_id: String,
+	difficulty_range: Vector2i = Vector2i(1, 5),
+	count: int = 5,
+	allowed_types: Array = []
+) -> Array:
 	if not _quizzes.has(quiz_id):
 		push_warning("QuizManager: Quiz '%s' nie istnieje" % quiz_id)
 		return []
@@ -80,10 +97,12 @@ func get_questions(quiz_id: String, difficulty_range: Vector2i = Vector2i(1, 5),
 
 	for q in all_questions:
 		var diff = q.get("difficulty", 1)
-		if diff >= difficulty_range.x and diff <= difficulty_range.y:
+		var qtype = q.get("type", "multiple_choice")
+		var diff_ok = diff >= difficulty_range.x and diff <= difficulty_range.y
+		var type_ok = allowed_types.is_empty() or (qtype in allowed_types)
+		if diff_ok and type_ok:
 			filtered.append(q)
 
-	# Mieszaj i ogranicz
 	filtered.shuffle()
 	if filtered.size() > count:
 		filtered.resize(count)
@@ -91,9 +110,18 @@ func get_questions(quiz_id: String, difficulty_range: Vector2i = Vector2i(1, 5),
 	return filtered
 
 
-## Rozpoczyna quiz — zwraca pierwszy question lub null
-func start_quiz(quiz_id: String, difficulty_range: Vector2i = Vector2i(1, 5), count: int = 5) -> Dictionary:
-	_current_questions = get_questions(quiz_id, difficulty_range, count)
+# ---------------------------------------------------------------------------
+# Przepływ quizu
+# ---------------------------------------------------------------------------
+
+## Rozpoczyna quiz — zwraca pierwsze pytanie lub {} jeśli brak pytań.
+func start_quiz(
+	quiz_id: String,
+	difficulty_range: Vector2i = Vector2i(1, 5),
+	count: int = 5,
+	allowed_types: Array = []
+) -> Dictionary:
+	_current_questions = get_questions(quiz_id, difficulty_range, count, allowed_types)
 	_current_quiz_id = quiz_id
 	_current_question_index = 0
 	_current_score = 0
@@ -105,13 +133,15 @@ func start_quiz(quiz_id: String, difficulty_range: Vector2i = Vector2i(1, 5), co
 	return _current_questions[0]
 
 
-## Sprawdza odpowiedź na bieżące pytanie
-func answer_current(selected_index: int) -> Dictionary:
+## Sprawdza odpowiedź na bieżące pytanie.
+## player_answer: Dictionary — format zależy od pola "type" pytania (patrz nagłówek).
+## Zwraca słownik z wynikiem lub {} jeśli quiz już skończony.
+func answer_current(player_answer: Dictionary) -> Dictionary:
 	if _current_question_index >= _current_questions.size():
 		return {}
 
 	var question = _current_questions[_current_question_index]
-	var correct = (selected_index == question.get("correct_index", -1))
+	var correct := _check_answer(question, player_answer)
 
 	if correct:
 		_current_score += 1
@@ -129,13 +159,17 @@ func answer_current(selected_index: int) -> Dictionary:
 
 	_current_question_index += 1
 
-	# Czy quiz się skończył?
 	if _current_question_index >= _current_questions.size():
 		quiz_completed.emit(_current_quiz_id, _current_score, _current_questions.size())
 
 	return {
 		"correct": correct,
-		"correct_index": question.get("correct_index", 0),
+		"question_type": question.get("type", "multiple_choice"),
+		"correct_index": question.get("correct_index", 0),        # multiple_choice
+		"correct_answer": question.get("correct_answer", null),   # true_false
+		"answer": question.get("answer", ""),                     # fill_text
+		"gaps": question.get("gaps", []),                         # fill_tiles
+		"pairs": question.get("pairs", []),                       # matching
 		"explanation": question.get("explanation", ""),
 		"quiz_finished": _current_question_index >= _current_questions.size(),
 		"score": _current_score,
@@ -143,6 +177,7 @@ func answer_current(selected_index: int) -> Dictionary:
 	}
 
 
+## Zwraca bieżące pytanie bez przesuwania indeksu.
 func get_current_question() -> Dictionary:
 	if _current_question_index < _current_questions.size():
 		return _current_questions[_current_question_index]
@@ -153,7 +188,71 @@ func get_quiz_ids() -> Array:
 	return _quizzes.keys()
 
 
-## Statystyki do adaptacyjnej trudności
+# ---------------------------------------------------------------------------
+# Sprawdzanie odpowiedzi — wewnętrzna logika per typ
+# ---------------------------------------------------------------------------
+
+func _check_answer(question: Dictionary, player_answer: Dictionary) -> bool:
+	var qtype = question.get("type", "multiple_choice")
+
+	match qtype:
+		"multiple_choice":
+			return player_answer.get("index", -1) == question.get("correct_index", -1)
+
+		"true_false":
+			return player_answer.get("value", null) == question.get("correct_answer", null)
+
+		"fill_text":
+			var given: String = player_answer.get("text", "").strip_edges()
+			var expected: String = question.get("answer", "")
+			if not question.get("case_sensitive", false):
+				given = given.to_lower()
+				expected = expected.to_lower()
+			var alternatives: Array = question.get("accepted_alternatives", [])
+			if not question.get("case_sensitive", false):
+				alternatives = alternatives.map(func(a): return a.to_lower())
+			return given == expected or given in alternatives
+
+		"fill_tiles":
+			var placements: Dictionary = player_answer.get("placements", {})
+			var gaps: Array = question.get("gaps", [])
+			for gap in gaps:
+				var idx = str(gap.get("index", -1))
+				if placements.get(idx, "") != gap.get("correct", ""):
+					return false
+			return true
+
+		"matching":
+			var player_pairs: Array = player_answer.get("pairs", [])
+			var correct_pairs: Array = question.get("pairs", [])
+			return _compare_pairs(player_pairs, correct_pairs)
+
+		_:
+			push_warning("QuizManager: Nieznany typ pytania '%s'" % qtype)
+			return false
+
+
+## Porównuje pary (kolejność nieistotna).
+func _compare_pairs(player: Array, correct: Array) -> bool:
+	if player.size() != correct.size():
+		return false
+	for pair in correct:
+		var found := false
+		for p in player:
+			if p.get("left_index", -1) == pair.get("left_index", -1) \
+			and p.get("right_index", -1) == pair.get("right_index", -1):
+				found = true
+				break
+		if not found:
+			return false
+	return true
+
+
+# ---------------------------------------------------------------------------
+# Statystyki / adaptacyjna trudność
+# ---------------------------------------------------------------------------
+
+## Dokładność per kategoria (do DifficultyManager / własnych analiz)
 func get_accuracy_for_category(category: String) -> float:
 	var correct_count := 0
 	var total_count := 0
@@ -165,7 +264,7 @@ func get_accuracy_for_category(category: String) -> float:
 					correct_count += _answered_questions[qid]["correct"]
 					total_count += _answered_questions[qid]["correct"] + _answered_questions[qid]["wrong"]
 	if total_count == 0:
-		return 0.5  # Domyślnie 50% jeśli brak danych
+		return 0.5
 	return float(correct_count) / float(total_count)
 
 
@@ -180,7 +279,9 @@ func get_overall_accuracy() -> float:
 	return float(correct_count) / float(total_count)
 
 
-## --- Zapis/Odczyt ---
+# ---------------------------------------------------------------------------
+# Zapis / Odczyt / Reset
+# ---------------------------------------------------------------------------
 
 func get_save_data() -> Dictionary:
 	return {
