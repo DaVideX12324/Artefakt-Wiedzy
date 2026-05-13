@@ -73,7 +73,7 @@ func _draw() -> void:
 	var bob_offset = sin(_bob_time) * 2.0 if _is_moving else 0.0
 
 	# Cień
-	draw_ellipse(Vector2(0, BODY_SIZE.y * 0.4), Vector2(BODY_SIZE.x * 0.5, 4), Color(0, 0, 0, 0.3))
+	_draw_ellipse(Vector2(0, BODY_SIZE.y * 0.4), Vector2(BODY_SIZE.x * 0.5, 4), Color(0, 0, 0, 0.3))
 
 	# Ciało — prostokąt z zaokrągleniami (symulowane)
 	var body_rect = Rect2(-BODY_SIZE / 2 + Vector2(0, bob_offset - 8), BODY_SIZE)
@@ -113,7 +113,7 @@ func _draw() -> void:
 
 
 ## Pomocnik do rysowania elipsy
-func draw_ellipse(center: Vector2, radii: Vector2, color: Color, segments: int = 16) -> void:
+func _draw_ellipse(center: Vector2, radii: Vector2, color: Color, segments: int = 16) -> void:
 	var points = PackedVector2Array()
 	for i in range(segments + 1):
 		var angle = (float(i) / segments) * TAU
