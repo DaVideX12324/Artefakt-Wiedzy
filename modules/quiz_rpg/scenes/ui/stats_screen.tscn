@@ -1,6 +1,6 @@
 [gd_scene format=3 uid="uid://stats001"]
 
-[ext_resource type="Script" uid="uid://cvrmoxqtuqm47" path="res://modules/quiz_rpg/scripts/ui/pause_menu.gd" id="1_stats"]
+[ext_resource type="Script" uid="uid://dm3m3tlvq2jpm" path="res://modules/quiz_rpg/scripts/ui/stats_screen.gd" id="1_g5p6y"]
 
 [node name="StatsScreen" type="Control" unique_id=16797768]
 layout_mode = 3
@@ -9,7 +9,7 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-script = ExtResource("1_stats")
+script = ExtResource("1_g5p6y")
 
 [node name="DimOverlay" type="ColorRect" parent="." unique_id=1571791712]
 layout_mode = 1
