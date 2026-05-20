@@ -9,11 +9,12 @@ var facing_direction: Vector2 = Vector2.DOWN
 var can_move: bool = true
 var nearby_interactables: Array = []
 var _use_programmer_art: bool = true
+var _gm: Node  # GameManager
 
 # Programmer art
-const BODY_COLOR := Color(0.2, 0.6, 1.0)       # Niebieski
+const BODY_COLOR := Color(0.2, 0.6, 1.0)
 const OUTLINE_COLOR := Color(0.1, 0.3, 0.6)
-const DIRECTION_COLOR := Color(1.0, 1.0, 0.3)   # Żółty wskaźnik kierunku
+const DIRECTION_COLOR := Color(1.0, 1.0, 0.3)
 const BODY_SIZE := Vector2(16, 20)
 
 # Bobbing animation
@@ -22,20 +23,20 @@ var _is_moving: bool = false
 
 
 func _ready() -> void:
-	# Sprawdź czy jest AnimatedSprite2D z ustawionymi klatkami
+	_gm = CoreManager.get_singleton("GameManager")
+
 	var sprite = get_node_or_null("AnimatedSprite2D")
 	if sprite and sprite is AnimatedSprite2D and sprite.sprite_frames:
 		if sprite.sprite_frames.get_animation_names().size() > 0:
 			_use_programmer_art = false
 
 	if _use_programmer_art:
-		# Ukryj pusty AnimatedSprite2D jeśli istnieje
 		if sprite:
 			sprite.visible = false
 
 
 func _physics_process(delta: float) -> void:
-	if not can_move or not GameManager.is_exploring():
+	if not can_move or not (_gm and _gm.is_exploring()):
 		velocity = Vector2.ZERO
 		_is_moving = false
 		if not _use_programmer_art:
@@ -69,23 +70,18 @@ func _draw() -> void:
 	if not _use_programmer_art:
 		return
 
-	# Bobbing offset (góra-dół przy chodzeniu)
 	var bob_offset = sin(_bob_time) * 2.0 if _is_moving else 0.0
 
-	# Cień
 	_draw_ellipse(Vector2(0, BODY_SIZE.y * 0.4), Vector2(BODY_SIZE.x * 0.5, 4), Color(0, 0, 0, 0.3))
 
-	# Ciało — prostokąt z zaokrągleniami (symulowane)
 	var body_rect = Rect2(-BODY_SIZE / 2 + Vector2(0, bob_offset - 8), BODY_SIZE)
 	draw_rect(body_rect, BODY_COLOR)
 	draw_rect(body_rect, OUTLINE_COLOR, false, 2.0)
 
-	# Głowa — kółko
 	var head_center = Vector2(0, -BODY_SIZE.y * 0.5 + bob_offset - 12)
 	draw_circle(head_center, 7.0, BODY_COLOR)
 	draw_arc(head_center, 7.0, 0, TAU, 24, OUTLINE_COLOR, 2.0)
 
-	# Oczy — wskazują kierunek patrzenia
 	var eye_offset = facing_direction.normalized() * 2.5
 	var left_eye = head_center + Vector2(-2.5, -1) + eye_offset
 	var right_eye = head_center + Vector2(2.5, -1) + eye_offset
@@ -94,7 +90,6 @@ func _draw() -> void:
 	draw_circle(left_eye + eye_offset * 0.3, 0.8, Color(0.1, 0.1, 0.2))
 	draw_circle(right_eye + eye_offset * 0.3, 0.8, Color(0.1, 0.1, 0.2))
 
-	# Wskaźnik kierunku — trójkąt
 	var dir_start = Vector2(0, bob_offset - 8) + facing_direction.normalized() * 14
 	var dir_perp = Vector2(-facing_direction.y, facing_direction.x).normalized() * 4
 	var triangle = PackedVector2Array([
@@ -104,7 +99,6 @@ func _draw() -> void:
 	])
 	draw_colored_polygon(triangle, DIRECTION_COLOR)
 
-	# Nogi (przy chodzeniu, proste animowane linie)
 	if _is_moving:
 		var leg_swing = sin(_bob_time) * 4.0
 		var hip = Vector2(0, BODY_SIZE.y * 0.3 + bob_offset - 8)
@@ -112,7 +106,6 @@ func _draw() -> void:
 		draw_line(hip + Vector2(3, 0), hip + Vector2(3 - leg_swing, 8), OUTLINE_COLOR, 2.0)
 
 
-## Pomocnik do rysowania elipsy
 func _draw_ellipse(center: Vector2, radii: Vector2, color: Color, segments: int = 16) -> void:
 	var points = PackedVector2Array()
 	for i in range(segments + 1):
@@ -123,7 +116,7 @@ func _draw_ellipse(center: Vector2, radii: Vector2, color: Color, segments: int 
 
 
 func _input(event: InputEvent) -> void:
-	if event.is_action_pressed("interact") and GameManager.is_exploring():
+	if event.is_action_pressed("interact") and _gm and _gm.is_exploring():
 		_try_interact()
 
 
