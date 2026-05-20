@@ -9,9 +9,11 @@ extends CanvasLayer
 @onready var menu_btn: Button = $Panel/VBoxContainer/MenuBtn
 
 var _paused: bool = false
+var _gm: Node
 
 
 func _ready() -> void:
+	_gm = CoreManager.get_singleton("GameManager")
 	panel.visible = false
 	resume_btn.pressed.connect(_on_resume)
 	save_btn.pressed.connect(_on_save)
@@ -20,7 +22,7 @@ func _ready() -> void:
 
 
 func _input(event: InputEvent) -> void:
-	if event.is_action_pressed("ui_cancel") and GameManager.is_exploring():
+	if event.is_action_pressed("ui_cancel") and _gm and _gm.is_exploring():
 		_toggle_pause()
 
 
@@ -28,11 +30,12 @@ func _toggle_pause() -> void:
 	_paused = not _paused
 	panel.visible = _paused
 	get_tree().paused = _paused
-
+	if not _gm:
+		return
 	if _paused:
-		GameManager.change_state(GameManager.GameState.PAUSED)
+		_gm.change_state(_gm.GameState.PAUSED)
 	else:
-		GameManager.change_state(GameManager.GameState.EXPLORING)
+		_gm.change_state(_gm.GameState.EXPLORING)
 
 
 func _on_resume() -> void:
@@ -40,8 +43,8 @@ func _on_resume() -> void:
 
 
 func _on_save() -> void:
-	GameManager.save_game()
-	# Krótki feedback
+	if _gm:
+		_gm.save_game()
 	save_btn.text = "Zapisano!"
 	await get_tree().create_timer(1.0).timeout
 	save_btn.text = "Zapisz Grę"
@@ -54,5 +57,6 @@ func _on_stats() -> void:
 
 func _on_menu() -> void:
 	get_tree().paused = false
-	GameManager.change_state(GameManager.GameState.MENU)
-	GameManager.transition_to_scene("res://modules/quiz_rpg/scenes/ui/main_menu.tscn")
+	if _gm:
+		_gm.change_state(_gm.GameState.MENU)
+		_gm.transition_to_scene("res://modules/quiz_rpg/scenes/ui/main_menu.tscn")

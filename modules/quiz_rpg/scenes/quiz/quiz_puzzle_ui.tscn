@@ -1,6 +1,6 @@
-[gd_scene load_steps=2 format=3 uid="uid://quizpuzzle001"]
+[gd_scene format=3 uid="uid://bevjdnc0cliyy"]
 
-[ext_resource type="Script" path="res://scripts/quiz/quiz_puzzle_controller.gd" id="1_puzzle"]
+[ext_resource type="Script" uid="uid://bcsjvn2ktrcl7" path="res://modules/quiz_rpg/scripts/quiz/quiz_puzzle_controller.gd" id="1_puzzle"]
 
 [node name="QuizPuzzleUI" type="CanvasLayer"]
 layer = 15

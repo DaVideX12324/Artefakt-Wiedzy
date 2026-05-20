@@ -1,6 +1,6 @@
-[gd_scene load_steps=2 format=3 uid="uid://quizcombat001"]
+[gd_scene format=3 uid="uid://beviygxa01iyy"]
 
-[ext_resource type="Script" path="res://scripts/quiz/quiz_combat_controller.gd" id="1_combat"]
+[ext_resource type="Script" uid="uid://bmndbqqcgecbu" path="res://modules/quiz_rpg/scripts/quiz/quiz_combat_controller.gd" id="1_combat"]
 
 [node name="QuizCombatUI" type="CanvasLayer"]
 layer = 15
