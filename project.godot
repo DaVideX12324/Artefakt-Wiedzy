@@ -22,10 +22,12 @@ config/icon="res://icon.svg"
 
 [autoload]
 
-GameManager="*res://autoloads/game_manager.gd"
 QuizManager="*res://autoloads/quiz_manager.gd"
-PlayerStats="*res://autoloads/player_stats.gd"
-DifficultyManager="*res://autoloads/difficulty_manager.gd"
+UIScaleManager="*uid://bo7wt0xx1m8os"
+CoreManager="*uid://blif74p856ci4"
+SettingsManager="*uid://bmyahb34b5ufu"
+SpriteLoader="*uid://blkvddehirgi1"
+WindowManager="*uid://3mbvnqyditk3"
 
 [display]
 
