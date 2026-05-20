@@ -1,6 +1,6 @@
 [gd_scene load_steps=4 format=3 uid="uid://player001"]
 
-[ext_resource type="Script" path="res://scripts/player/player.gd" id="1_player"]
+[ext_resource type="Script" path="res://modules/quiz_rpg/scripts/player/player.gd" id="1_player"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_player"]
 size = Vector2(14, 8)
@@ -21,17 +21,7 @@ shape = SubResource("RectangleShape2D_player")
 
 [node name="InteractionArea" type="Area2D" parent="."]
 collision_layer = 0
-collision_mask = 20
+collision_mask = 4
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="InteractionArea"]
 shape = SubResource("CircleShape2D_interact")
-
-[node name="Camera2D" type="Camera2D" parent="."]
-zoom = Vector2(2, 2)
-position_smoothing_enabled = true
-position_smoothing_speed = 8.0
-
-[connection signal="body_entered" from="InteractionArea" to="." method="_on_interaction_area_body_entered"]
-[connection signal="body_exited" from="InteractionArea" to="." method="_on_interaction_area_body_exited"]
-[connection signal="area_entered" from="InteractionArea" to="." method="_on_interaction_area_area_entered"]
-[connection signal="area_exited" from="InteractionArea" to="." method="_on_interaction_area_area_exited"]
