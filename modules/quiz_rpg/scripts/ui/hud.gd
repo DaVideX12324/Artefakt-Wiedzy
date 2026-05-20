@@ -1,26 +1,32 @@
 extends CanvasLayer
 
-## HUD — wyświetla HP, XP, poziom, punkty, streak.
-## Działa z domyślnym fontem Godota, nie wymaga zewnętrznych zasobów.
+## HUD — wyswietla HP, XP, poziom, punkty, streak.
+## Dziala z domyslnym fontem Godota, nie wymaga zewnetrznych zasobow.
 
-@onready var hp_bar: ProgressBar = $HUDPanel/HBoxContainer/HPBar
-@onready var hp_label: Label = $HUDPanel/HBoxContainer/HPLabel
-@onready var xp_bar: ProgressBar = $HUDPanel/HBoxContainer/XPBar
-@onready var level_label: Label = $HUDPanel/HBoxContainer/LevelLabel
-@onready var points_label: Label = $HUDPanel/HBoxContainer/PointsLabel
-@onready var streak_label: Label = $HUDPanel/HBoxContainer/StreakLabel
-@onready var reward_popup: Label = $RewardPopup
-@onready var fade_overlay: ColorRect = $FadeOverlay
+@onready var hp_bar      : ProgressBar = $HUDPanel/HBoxContainer/HPBar
+@onready var hp_label    : Label       = $HUDPanel/HBoxContainer/HPLabel
+@onready var xp_bar      : ProgressBar = $HUDPanel/HBoxContainer/XPBar
+@onready var level_label : Label       = $HUDPanel/HBoxContainer/LevelLabel
+@onready var points_label: Label       = $HUDPanel/HBoxContainer/PointsLabel
+@onready var streak_label: Label       = $HUDPanel/HBoxContainer/StreakLabel
+@onready var reward_popup: Label       = $RewardPopup
+@onready var fade_overlay: ColorRect   = $FadeOverlay
 
+var _ps: Node  # PlayerStats
 var _reward_base_y: float = 80.0
 
 
 func _ready() -> void:
-	PlayerStats.hp_changed.connect(_on_hp_changed)
-	PlayerStats.xp_changed.connect(_on_xp_changed)
-	PlayerStats.level_up.connect(_on_level_up)
-	PlayerStats.points_changed.connect(_on_points_changed)
-	PlayerStats.reward_earned.connect(_on_reward_earned)
+	_ps = CoreManager.get_singleton("PlayerStats")
+	if not _ps:
+		push_error("HUD: PlayerStats niedostepny przez CoreManager")
+		return
+
+	_ps.hp_changed.connect(_on_hp_changed)
+	_ps.xp_changed.connect(_on_xp_changed)
+	_ps.level_up.connect(_on_level_up)
+	_ps.points_changed.connect(_on_points_changed)
+	_ps.reward_earned.connect(_on_reward_earned)
 
 	# Style HP bara (czerwony)
 	if hp_bar:
@@ -82,14 +88,16 @@ func _ready() -> void:
 
 
 func _update_all() -> void:
-	_on_hp_changed(PlayerStats.hp, PlayerStats.max_hp)
-	_on_xp_changed(PlayerStats.xp, PlayerStats.xp_to_next_level())
+	if not _ps:
+		return
+	_on_hp_changed(_ps.hp, _ps.max_hp)
+	_on_xp_changed(_ps.xp, _ps.xp_to_next_level())
 	if level_label:
-		level_label.text = "Lvl %d" % PlayerStats.level
+		level_label.text = "Lvl %d" % _ps.level
 	if points_label:
-		points_label.text = "Pkt: %d" % PlayerStats.points
+		points_label.text = "Pkt: %d" % _ps.points
 	if streak_label:
-		streak_label.text = "x%d" % PlayerStats.streak
+		streak_label.text = "x%d" % _ps.streak
 
 
 func _on_hp_changed(new_hp: int, max_hp: int) -> void:
@@ -136,5 +144,5 @@ func _show_reward_popup(text: String) -> void:
 
 
 func _process(_delta: float) -> void:
-	if streak_label:
-		streak_label.text = "x%d" % PlayerStats.streak
+	if streak_label and _ps:
+		streak_label.text = "x%d" % _ps.streak
