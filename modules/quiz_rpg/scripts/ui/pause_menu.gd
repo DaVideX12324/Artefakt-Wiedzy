@@ -48,11 +48,11 @@ func _on_save() -> void:
 
 
 func _on_stats() -> void:
-	var stats_scene = preload("res://scenes/ui/stats_screen.tscn").instantiate()
+	var stats_scene = preload("res://modules/quiz_rpg/scenes/ui/stats_screen.tscn").instantiate()
 	add_child(stats_scene)
 
 
 func _on_menu() -> void:
 	get_tree().paused = false
 	GameManager.change_state(GameManager.GameState.MENU)
-	GameManager.transition_to_scene("res://scenes/maps/main_menu.tscn")
+	GameManager.transition_to_scene("res://modules/quiz_rpg/scenes/ui/main_menu.tscn")

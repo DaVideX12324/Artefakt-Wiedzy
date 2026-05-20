@@ -1,12 +1,12 @@
-[gd_scene format=3 uid="uid://quiz_rpg_main_menu"]
+[gd_scene format=3 uid="uid://cokexptktj0u0"]
 
-[ext_resource type="Script" path="res://modules/quiz_rpg/scripts/main_menu.gd" id="1"]
+[ext_resource type="Script" uid="uid://srjisxxnddcr" path="res://modules/quiz_rpg/scripts/ui/main_menu.gd" id="1"]
 
-[node name="MainMenu" type="CanvasLayer"]
+[node name="MainMenu" type="CanvasLayer" unique_id=748218835]
 process_mode = 3
 script = ExtResource("1")
 
-[node name="BG" type="ColorRect" parent="."]
+[node name="BG" type="ColorRect" parent="." unique_id=445807727]
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
@@ -14,7 +14,7 @@ grow_horizontal = 2
 grow_vertical = 2
 color = Color(0.06, 0.06, 0.1, 1)
 
-[node name="Center" type="CenterContainer" parent="."]
+[node name="Center" type="CenterContainer" parent="." unique_id=1572571532]
 texture_filter = 2
 anchors_preset = 15
 anchor_right = 1.0
@@ -22,62 +22,62 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 
-[node name="Panel" type="PanelContainer" parent="Center"]
+[node name="Panel" type="PanelContainer" parent="Center" unique_id=1929729743]
 layout_mode = 2
 
-[node name="Margin" type="MarginContainer" parent="Center/Panel"]
+[node name="Margin" type="MarginContainer" parent="Center/Panel" unique_id=744504487]
 layout_mode = 2
 theme_override_constants/margin_left = 32
-theme_override_constants/margin_right = 32
 theme_override_constants/margin_top = 24
+theme_override_constants/margin_right = 32
 theme_override_constants/margin_bottom = 24
 
-[node name="VBox" type="VBoxContainer" parent="Center/Panel/Margin"]
+[node name="VBox" type="VBoxContainer" parent="Center/Panel/Margin" unique_id=1788516176]
 layout_mode = 2
 theme_override_constants/separation = 10
 alignment = 1
 
-[node name="Title" type="Label" parent="Center/Panel/Margin/VBox"]
+[node name="Title" type="Label" parent="Center/Panel/Margin/VBox" unique_id=553056525]
 layout_mode = 2
+theme_override_font_sizes/font_size = 28
 text = "📖 Quiz RPG"
 horizontal_alignment = 1
-theme_override_font_sizes/font_size = 28
 
-[node name="Subtitle" type="Label" parent="Center/Panel/Margin/VBox"]
+[node name="Subtitle" type="Label" parent="Center/Panel/Margin/VBox" unique_id=2011039917]
 layout_mode = 2
 theme_override_colors/font_color = Color(0.7, 0.7, 0.8, 1)
 text = "Ucz sie, zdobywaj doswiadczenie!"
 horizontal_alignment = 1
 
-[node name="Sep1" type="HSeparator" parent="Center/Panel/Margin/VBox"]
+[node name="Sep1" type="HSeparator" parent="Center/Panel/Margin/VBox" unique_id=1284879037]
 layout_mode = 2
 
-[node name="BtnNewGame" type="Button" parent="Center/Panel/Margin/VBox"]
+[node name="BtnNewGame" type="Button" parent="Center/Panel/Margin/VBox" unique_id=359661776]
 custom_minimum_size = Vector2(280, 42)
 layout_mode = 2
 theme_override_colors/font_color = Color(0.2, 1, 0.4, 1)
 text = "▶ Nowa gra"
 
-[node name="BtnLoadGame" type="Button" parent="Center/Panel/Margin/VBox"]
+[node name="BtnLoadGame" type="Button" parent="Center/Panel/Margin/VBox" unique_id=765951714]
 custom_minimum_size = Vector2(280, 42)
 layout_mode = 2
 text = "📂 Wczytaj gre"
 
-[node name="BtnStats" type="Button" parent="Center/Panel/Margin/VBox"]
+[node name="BtnStats" type="Button" parent="Center/Panel/Margin/VBox" unique_id=1054852286]
 custom_minimum_size = Vector2(280, 36)
 layout_mode = 2
 text = "📊 Statystyki"
 
-[node name="Sep2" type="HSeparator" parent="Center/Panel/Margin/VBox"]
+[node name="Sep2" type="HSeparator" parent="Center/Panel/Margin/VBox" unique_id=545016424]
 layout_mode = 2
 
-[node name="BtnQuit" type="Button" parent="Center/Panel/Margin/VBox"]
+[node name="BtnQuit" type="Button" parent="Center/Panel/Margin/VBox" unique_id=163094946]
 custom_minimum_size = Vector2(280, 36)
 layout_mode = 2
 theme_override_colors/font_color = Color(1, 0.4, 0.4, 1)
 text = "✕ Powrot do menu glownego"
 
-[node name="VerLabel" type="Label" parent="."]
+[node name="VerLabel" type="Label" parent="." unique_id=514408480]
 anchors_preset = 3
 anchor_left = 1.0
 anchor_top = 1.0
@@ -93,7 +93,8 @@ theme_override_colors/font_color = Color(0.4, 0.4, 0.45, 1)
 text = "quiz_rpg v0.1-dev"
 horizontal_alignment = 2
 
-[node name="StatsPanel" type="PanelContainer" parent="."]
+[node name="StatsPanel" type="PanelContainer" parent="." unique_id=29497114]
+visible = false
 anchors_preset = 8
 anchor_left = 0.5
 anchor_top = 0.5
@@ -105,24 +106,23 @@ offset_right = 200.0
 offset_bottom = 220.0
 grow_horizontal = 2
 grow_vertical = 2
-visible = false
 
-[node name="StatsMargin" type="MarginContainer" parent="StatsPanel"]
+[node name="StatsMargin" type="MarginContainer" parent="StatsPanel" unique_id=2139497620]
 layout_mode = 2
 theme_override_constants/margin_left = 16
-theme_override_constants/margin_right = 16
 theme_override_constants/margin_top = 12
+theme_override_constants/margin_right = 16
 theme_override_constants/margin_bottom = 12
 
-[node name="StatsVBox" type="VBoxContainer" parent="StatsPanel/StatsMargin"]
+[node name="StatsVBox" type="VBoxContainer" parent="StatsPanel/StatsMargin" unique_id=1469079065]
 layout_mode = 2
 theme_override_constants/separation = 8
 
-[node name="StatsLabel" type="Label" parent="StatsPanel/StatsMargin/StatsVBox"]
+[node name="StatsLabel" type="Label" parent="StatsPanel/StatsMargin/StatsVBox" unique_id=223965127]
 layout_mode = 2
 text = "Statystyki gracza"
 
-[node name="BtnCloseStats" type="Button" parent="StatsPanel/StatsMargin/StatsVBox"]
+[node name="BtnCloseStats" type="Button" parent="StatsPanel/StatsMargin/StatsVBox" unique_id=1198756821]
 layout_mode = 2
 theme_override_colors/font_color = Color(1, 0.4, 0.4, 1)
 text = "✕ Zamknij"

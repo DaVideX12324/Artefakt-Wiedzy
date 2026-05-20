@@ -244,7 +244,7 @@ func start_combat(player: Node2D) -> void:
 	if _dm:
 		diff_range = _dm.get_difficulty_range(quiz_category)
 
-	var combat_canvas := preload("res://scenes/quiz/quiz_combat_ui.tscn").instantiate()
+	var combat_canvas := preload("res://modules/quiz_rpg/scenes/quiz/quiz_combat_ui.tscn").instantiate()
 	var combat_ui := combat_canvas.get_node("Root")
 	combat_ui.setup(self, player, quiz_id, diff_range, question_count)
 	get_tree().current_scene.add_child(combat_canvas)

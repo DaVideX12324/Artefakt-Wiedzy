@@ -1,0 +1,98 @@
+[gd_scene format=3 uid="uid://bgke5b8r0jnl3"]
+
+[ext_resource type="Script" uid="uid://srjisxxnddcr" path="res://modules/quiz_rpg/scripts/ui/main_menu.gd" id="1_7wopd"]
+
+[node name="MainMenu" type="Control" unique_id=1113174107]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_7wopd")
+
+[node name="Background" type="ColorRect" parent="." unique_id=854728998]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.1, 0.12, 0.18, 1)
+
+[node name="TitleLabel" type="Label" parent="." unique_id=152071324]
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -200.0
+offset_top = 100.0
+offset_right = 200.0
+offset_bottom = 180.0
+grow_horizontal = 2
+text = "⚔ Quiz RPG ⚔"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="VBoxContainer" type="VBoxContainer" parent="." unique_id=541720529]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -120.0
+offset_top = -80.0
+offset_right = 120.0
+offset_bottom = 80.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/separation = 15
+
+[node name="NewGameBtn" type="Button" parent="VBoxContainer" unique_id=595368545]
+custom_minimum_size = Vector2(240, 45)
+layout_mode = 2
+text = "Nowa Gra"
+
+[node name="LoadGameBtn" type="Button" parent="VBoxContainer" unique_id=2020686294]
+custom_minimum_size = Vector2(240, 45)
+layout_mode = 2
+text = "Wczytaj Grę"
+
+[node name="StatsBtn" type="Button" parent="VBoxContainer" unique_id=583604401]
+custom_minimum_size = Vector2(240, 45)
+layout_mode = 2
+text = "Statystyki"
+
+[node name="QuitBtn" type="Button" parent="VBoxContainer" unique_id=1728075064]
+custom_minimum_size = Vector2(240, 45)
+layout_mode = 2
+text = "Wyjdź"
+
+[node name="StatsPanel" type="Panel" parent="." unique_id=1007670902]
+visible = false
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -200.0
+offset_top = -150.0
+offset_right = 200.0
+offset_bottom = 150.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="StatsLabel" type="Label" parent="StatsPanel" unique_id=1311247590]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 15.0
+offset_top = 15.0
+offset_right = -15.0
+offset_bottom = -15.0
+grow_horizontal = 2
+grow_vertical = 2
+text = "Brak statystyk"

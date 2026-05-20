@@ -25,7 +25,7 @@ func _populate() -> void:
 		return
 
 	var accuracy     := QuizManager.get_overall_accuracy()
-	var total_answered := _ps.total_correct + _ps.total_wrong
+	var total_answered : int = _ps.total_correct + _ps.total_wrong
 
 	stats_text.text = """[b]Postepy gracza[/b]
 

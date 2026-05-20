@@ -311,7 +311,7 @@ func _resolve_attack(correct: bool) -> void:
 
 		HitParticles.create_at(enemy, enemy.global_position, Color(1.0, 0.5, 0.2))
 	else:
-		var fail_type := ["Pudlo!", "Unik wroga!", "Blok wroga!"][randi() % 3]
+		var fail_type : String = ["Pudlo!", "Unik wroga!", "Blok wroga!"][randi() % 3]
 		result_label.text = fail_type
 		result_label.add_theme_color_override("font_color", Color(0.7, 0.7, 0.7))
 		_log(fail_type + " Atak nie trafil.")
