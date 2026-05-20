@@ -1,6 +1,7 @@
 [gd_scene format=3 uid="uid://aw_main_menu"]
 
 [ext_resource type="Script" path="res://scripts/main_menu.gd" id="1"]
+[ext_resource type="PackedScene" uid="uid://bekjolfxecoun" path="res://scenes/ui/options_menu.tscn" id="2"]
 
 [node name="AWMainMenu" type="CanvasLayer"]
 process_mode = 3
@@ -70,9 +71,21 @@ Ucz sie, zdobywaj XP"
 [node name="Sep2" type="HSeparator" parent="Center/Panel/Margin/VBox"]
 layout_mode = 2
 
-[node name="BtnQuit" type="Button" parent="Center/Panel/Margin/VBox"]
-custom_minimum_size = Vector2(320, 36)
+[node name="HBoxMeta" type="HBoxContainer" parent="Center/Panel/Margin/VBox"]
 layout_mode = 2
+theme_override_constants/separation = 8
+alignment = 1
+
+[node name="BtnOptions" type="Button" parent="Center/Panel/Margin/VBox/HBoxMeta"]
+custom_minimum_size = Vector2(154, 36)
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Ustawienia"
+
+[node name="BtnQuit" type="Button" parent="Center/Panel/Margin/VBox/HBoxMeta"]
+custom_minimum_size = Vector2(154, 36)
+layout_mode = 2
+size_flags_horizontal = 3
 theme_override_colors/font_color = Color(1, 0.4, 0.4, 1)
 text = "Wyjscie"
 
@@ -91,3 +104,5 @@ grow_vertical = 0
 theme_override_colors/font_color = Color(0.35, 0.35, 0.4, 1)
 text = "Artefakt Wiedzy v0.1-dev"
 horizontal_alignment = 2
+
+[node name="OptionsMenu" parent="." instance=ExtResource("2")]
