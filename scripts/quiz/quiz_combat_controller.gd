@@ -3,41 +3,35 @@ extends Control
 ## Turn-based combat controller.
 ##
 ## Flow tury gracza:
-##   1. Gracz wybiera akcję: ATAK / OBRONA / LECZENIE / UCIECZKA
-##   2. Pojawia się pytanie quizowe
-##   3. Wynik quizu modyfikuje akcję:
+##   1. Gracz wybiera akcje: ATAK / OBRONA / LECZENIE / UCIECZKA
+##   2. Pojawia sie pytanie quizowe
+##   3. Wynik quizu modyfikuje akcje:
 ##
-##   ATAK + poprawna   → pełne obrażenia (+ szansa na krytyk z RNG bonus)
-##   ATAK + błędna     → miss / dodge / block przez wroga (losowo)
-##
-##   OBRONA + poprawna → pełny blok (0 dmg w turze wroga)
-##   OBRONA + błędna   → częściowy blok (50% dmg w turze wroga)
-##
-##   LECZENIE + poprawna → pełne leczenie (30% max HP)
-##   LECZENIE + błędna   → małe leczenie (10% max HP)
-##
-##   4. Tura wroga — wróg atakuje (modyfikowane przez obronę gracza)
-##   5. Sprawdź koniec walki → powtórz
+##   ATAK + poprawna   → pelne obrazenia (+ szansa na krytyk z RNG bonus)
+##   ATAK + bledna     → miss / dodge / block przez wroga (losowo)
+##   OBRONA + poprawna → pelny blok (0 dmg w turze wroga)
+##   OBRONA + bledna   → czesciowy blok (50% dmg w turze wroga)
+##   LECZENIE + poprawna → pelne leczenie (30% max HP)
+##   LECZENIE + bledna   → male leczenie (10% max HP)
+##   4. Tura wroga — wrog atakuje (modyfikowane przez obrone gracza)
+##   5. Sprawdz koniec walki → powtorz
 
 signal combat_finished(player_won: bool)
 
-# === Stany walki ===
 enum Phase { ACTION_SELECT, QUIZ, PLAYER_RESULT, ENEMY_TURN, COMBAT_END }
 enum Action { ATTACK, DEFEND, HEAL, FLEE }
 
 var phase: Phase = Phase.ACTION_SELECT
 var chosen_action: Action = Action.ATTACK
 var quiz_correct: bool = false
-var defending: bool = false  # Czy gracz bronił się w tej turze
+var defending: bool = false
 
-# === Referencje ===
-var enemy: Node2D  # EnemyBase
+var enemy: Node2D
 var player: Node2D
 var quiz_id: String
 var _diff_range: Vector2i
 var _question_count: int
 
-# === Staty walki ===
 var enemy_hp: int = 50
 var enemy_max_hp: int = 50
 var enemy_name_str: String = "Przeciwnik"
@@ -45,7 +39,6 @@ var enemy_base_damage: int = 15
 var player_base_damage: int = 20
 var turn_number: int = 0
 
-# === Node referencje (ustawiane w _ready) ===
 var action_panel: VBoxContainer
 var quiz_panel: VBoxContainer
 var result_label: Label
@@ -61,21 +54,23 @@ var turn_label: Label
 var streak_label: Label
 var combat_log: RichTextLabel
 
-# Przyciski akcji
 var atk_btn: Button
 var def_btn: Button
 var heal_btn: Button
 var flee_btn: Button
 
-# Timer quizu
 var timer_bar: ProgressBar
 var _timer: float = 0.0
 var _time_limit: float = 20.0
 var _timer_active: bool = false
 var _answering: bool = false
 
+# Singletony
+var _ps: Node   # PlayerStats
+var _dm: Node   # DifficultyManager
+var _gm: Node   # GameManager
 
-## Wywoływane PRZED dodaniem do drzewa
+
 func setup(p_enemy: Node2D, p_player: Node2D, p_quiz_id: String,
 		diff_range: Vector2i, question_count: int) -> void:
 	enemy = p_enemy
@@ -84,7 +79,6 @@ func setup(p_enemy: Node2D, p_player: Node2D, p_quiz_id: String,
 	_diff_range = diff_range
 	_question_count = question_count
 
-	# Kopiuj staty wroga
 	enemy_hp = p_enemy.hp
 	enemy_max_hp = p_enemy.max_hp
 	enemy_name_str = p_enemy.enemy_name
@@ -92,9 +86,13 @@ func setup(p_enemy: Node2D, p_player: Node2D, p_quiz_id: String,
 	player_base_damage = 20
 
 
-## Wywoływane PO dodaniu do drzewa
 func _ready() -> void:
-	# --- Pobierz referencje ---
+	_ps = CoreManager.get_singleton("PlayerStats")
+	_dm = CoreManager.get_singleton("DifficultyManager")
+	_gm = CoreManager.get_singleton("GameManager")
+	if not _ps:
+		push_error("QuizCombatController: PlayerStats niedostepny przez CoreManager")
+
 	action_panel = $Panel/HSplit/RightSide/ActionPanel
 	quiz_panel = $Panel/HSplit/RightSide/QuizPanel
 	result_label = $Panel/HSplit/RightSide/ResultLabel
@@ -123,7 +121,6 @@ func _ready() -> void:
 	heal_btn = $Panel/HSplit/RightSide/ActionPanel/HealBtn
 	flee_btn = $Panel/HSplit/RightSide/ActionPanel/FleeBtn
 
-	# --- Podłącz sygnały ---
 	atk_btn.pressed.connect(_on_action.bind(Action.ATTACK))
 	def_btn.pressed.connect(_on_action.bind(Action.DEFEND))
 	heal_btn.pressed.connect(_on_action.bind(Action.HEAL))
@@ -132,14 +129,12 @@ func _ready() -> void:
 	for i in range(answer_buttons.size()):
 		answer_buttons[i].pressed.connect(_on_answer.bind(i))
 
-	# --- Styluj ---
 	UIThemeSetup.style_quiz_ui(self)
 	_style_action_buttons()
 	_style_arena()
 
-	# --- Inicjalizuj ---
 	enemy_name_label.text = enemy_name_str
-	player_name_label.text = PlayerStats.player_name
+	player_name_label.text = _ps.player_name if _ps else "Gracz"
 	_update_hp_bars()
 	_log("Walka z %s rozpoczeta!" % enemy_name_str)
 	_start_player_turn()
@@ -165,7 +160,8 @@ func _start_player_turn() -> void:
 	phase = Phase.ACTION_SELECT
 
 	turn_label.text = "Tura %d — Twoj ruch" % turn_number
-	streak_label.text = "Seria: %d  |  RNG: +%.0f%%" % [PlayerStats.streak, PlayerStats.rng_bonus * 100]
+	if _ps:
+		streak_label.text = "Seria: %d  |  RNG: +%.0f%%" % [_ps.streak, _ps.rng_bonus * 100]
 
 	action_panel.visible = true
 	quiz_panel.visible = false
@@ -183,13 +179,11 @@ func _on_action(action: Action) -> void:
 		_try_flee()
 		return
 
-	# Rozpocznij quiz
 	_set_action_buttons_enabled(false)
 	phase = Phase.QUIZ
 
 	var q = QuizManager.start_quiz(quiz_id, _diff_range, 1)
 	if q.is_empty():
-		# Brak pytań — traktuj jako poprawna
 		_resolve_action(true)
 		return
 
@@ -221,25 +215,25 @@ func _on_answer(index: int) -> void:
 	_answering = false
 	_timer_active = false
 
-	var result = QuizManager.answer_current(index)
-	var correct = result.get("correct", false)
-	var correct_idx = result.get("correct_index", 0)
-	var category = quiz_id
+	# answer_current() przyjmuje Dictionary z kluczem "index"
+	var result: Dictionary = QuizManager.answer_current({"index": index})
+	var correct: bool = result.get("correct", false)
+	var correct_idx: int = result.get("correct_index", 0)
+	var category := quiz_id
 
-	# Pokaż poprawną
 	for i in range(4):
 		answer_buttons[i].disabled = true
 	answer_buttons[correct_idx].add_theme_color_override("font_color", Color.GREEN)
 	if not correct and index >= 0 and index < answer_buttons.size():
 		answer_buttons[index].add_theme_color_override("font_color", Color.RED)
 
-	# Statystyki
-	if correct:
-		PlayerStats.on_correct_answer()
-		DifficultyManager.record_answer(category, true)
-	else:
-		PlayerStats.on_wrong_answer()
-		DifficultyManager.record_answer(category, false)
+	if _ps:
+		if correct:
+			_ps.on_correct_answer()
+		else:
+			_ps.on_wrong_answer()
+	if _dm:
+		_dm.record_answer(category, correct)
 
 	await get_tree().create_timer(0.8).timeout
 	_resolve_action(correct)
@@ -249,8 +243,9 @@ func _on_time_expired() -> void:
 	if not _answering:
 		return
 	_answering = false
-	QuizManager.answer_current(-1)
-	PlayerStats.on_wrong_answer()
+	QuizManager.answer_current({"index": -1})
+	if _ps:
+		_ps.on_wrong_answer()
 
 	for btn in answer_buttons:
 		btn.disabled = true
@@ -261,7 +256,7 @@ func _on_time_expired() -> void:
 
 
 # =============================================================
-#  ROZWIĄZANIE AKCJI
+#  ROZWIAZANIE AKCJI
 # =============================================================
 
 func _resolve_action(correct: bool) -> void:
@@ -279,26 +274,24 @@ func _resolve_action(correct: bool) -> void:
 			_resolve_heal(correct)
 
 	_update_hp_bars()
-	streak_label.text = "Seria: %d  |  RNG: +%.0f%%" % [PlayerStats.streak, PlayerStats.rng_bonus * 100]
+	if _ps:
+		streak_label.text = "Seria: %d  |  RNG: +%.0f%%" % [_ps.streak, _ps.rng_bonus * 100]
 
 	await get_tree().create_timer(1.5).timeout
 
-	# Sprawdź czy wróg pokonany
 	if enemy_hp <= 0:
 		_end_combat(true)
 		return
 
-	# Tura wroga
 	_enemy_turn()
 
 
 func _resolve_attack(correct: bool) -> void:
 	if correct:
-		var dmg = player_base_damage
-		var crit = false
+		var dmg := player_base_damage
+		var crit := false
 
-		# Szansa na krytyk z RNG bonus
-		if PlayerStats.roll_with_bonus(0.15):
+		if _ps and _ps.roll_with_bonus(0.15):
 			dmg = int(dmg * 1.8)
 			crit = true
 
@@ -318,8 +311,7 @@ func _resolve_attack(correct: bool) -> void:
 
 		HitParticles.create_at(enemy, enemy.global_position, Color(1.0, 0.5, 0.2))
 	else:
-		# Miss / Dodge / Block
-		var fail_type = ["Pudlo!", "Unik wroga!", "Blok wroga!"][randi() % 3]
+		var fail_type := ["Pudlo!", "Unik wroga!", "Blok wroga!"][randi() % 3]
 		result_label.text = fail_type
 		result_label.add_theme_color_override("font_color", Color(0.7, 0.7, 0.7))
 		_log(fail_type + " Atak nie trafil.")
@@ -341,9 +333,11 @@ func _resolve_defend(correct: bool) -> void:
 
 
 func _resolve_heal(correct: bool) -> void:
-	var heal_pct = 0.30 if correct else 0.10
-	var heal_amount = int(PlayerStats.max_hp * heal_pct)
-	PlayerStats.heal(heal_amount)
+	if not _ps:
+		return
+	var heal_pct := 0.30 if correct else 0.10
+	var heal_amount := int(_ps.max_hp * heal_pct)
+	_ps.heal(heal_amount)
 	_flash_sprite(player_sprite_node, Color.GREEN)
 
 	if correct:
@@ -359,14 +353,13 @@ func _resolve_heal(correct: bool) -> void:
 
 
 func _try_flee() -> void:
-	# 30% bazowa szansa + RNG bonus
-	if PlayerStats.roll_with_bonus(0.30):
+	if _ps and _ps.roll_with_bonus(0.30):
 		_log("Ucieczka udana!")
 		result_label.visible = true
 		result_label.text = "Uciekasz!"
 		result_label.add_theme_color_override("font_color", Color.WHITE)
 		await get_tree().create_timer(1.0).timeout
-		_end_combat(false, true)  # fled = true
+		_end_combat(false, true)
 	else:
 		_log("Ucieczka nieudana! Tracisz ture.")
 		result_label.visible = true
@@ -392,12 +385,10 @@ func _enemy_turn() -> void:
 
 	await get_tree().create_timer(0.5).timeout
 
-	# Wróg zawsze atakuje (proste AI)
-	var raw_damage = enemy_base_damage + randi() % 8  # Losowy rozrzut
+	var raw_damage := enemy_base_damage + randi() % 8
 
 	var actual_damage: int
 	if defending and quiz_correct:
-		# Pełny blok
 		actual_damage = 0
 		result_label.text = "BLOK! %s atakuje ale nie zadaje obrazen!" % enemy_name_str
 		result_label.add_theme_color_override("font_color", Color(0.3, 0.7, 1.0))
@@ -405,18 +396,18 @@ func _enemy_turn() -> void:
 		_flash_sprite(player_sprite_node, Color(0.3, 0.7, 1.0))
 		FloatingText.create_at(player, player.global_position + Vector2(0, -20), "BLOK!", Color(0.3, 0.7, 1.0), 14)
 	elif defending and not quiz_correct:
-		# Częściowy blok — 50%
 		actual_damage = int(raw_damage * 0.5)
-		PlayerStats.take_damage(actual_damage)
+		if _ps:
+			_ps.take_damage(actual_damage)
 		result_label.text = "Czesciowy blok! %s zadaje %d DMG (-%d zblokowane)" % [enemy_name_str, actual_damage, raw_damage - actual_damage]
 		result_label.add_theme_color_override("font_color", Color(0.8, 0.6, 0.3))
 		_log("%s atakuje — czesciowy blok. %d obrazen (z %d)." % [enemy_name_str, actual_damage, raw_damage])
 		_flash_sprite(player_sprite_node, Color(0.8, 0.6, 0.3))
 		FloatingText.create_at(player, player.global_position + Vector2(0, -20), "-%d (blok)" % actual_damage, Color.ORANGE, 12)
 	else:
-		# Brak obrony — pełne obrażenia
 		actual_damage = raw_damage
-		PlayerStats.take_damage(actual_damage)
+		if _ps:
+			_ps.take_damage(actual_damage)
 		result_label.text = "%s atakuje! -%d HP" % [enemy_name_str, actual_damage]
 		result_label.add_theme_color_override("font_color", Color.RED)
 		_log("%s atakuje! Otrzymujesz %d obrazen." % [enemy_name_str, actual_damage])
@@ -428,12 +419,10 @@ func _enemy_turn() -> void:
 
 	await get_tree().create_timer(1.5).timeout
 
-	# Sprawdź czy gracz żyje
-	if not PlayerStats.is_alive():
+	if _ps and not _ps.is_alive():
 		_end_combat(false)
 		return
 
-	# Następna tura gracza
 	_start_player_turn()
 
 
@@ -461,9 +450,7 @@ func _end_combat(player_won: bool, fled: bool = false) -> void:
 
 	await get_tree().create_timer(2.0).timeout
 
-	# Synchronizuj HP wroga
 	enemy.hp = enemy_hp
-
 	combat_finished.emit(player_won)
 	enemy.on_combat_finished(player_won, player)
 	get_parent().queue_free()
@@ -476,21 +463,20 @@ func _end_combat(player_won: bool, fled: bool = false) -> void:
 func _update_hp_bars() -> void:
 	if enemy_hp_bar:
 		enemy_hp_bar.value = (float(enemy_hp) / float(enemy_max_hp)) * 100.0
-	if player_hp_bar:
-		player_hp_bar.value = (float(PlayerStats.hp) / float(PlayerStats.max_hp)) * 100.0
+	if player_hp_bar and _ps:
+		player_hp_bar.value = (float(_ps.hp) / float(_ps.max_hp)) * 100.0
 
 
 func _log(text: String) -> void:
 	if combat_log:
 		combat_log.append_text(text + "\n")
-		# Auto-scroll
 		combat_log.scroll_to_line(combat_log.get_line_count() - 1)
 
 
 func _flash_sprite(sprite_control: Control, color: Color) -> void:
 	if not sprite_control:
 		return
-	var tween = create_tween()
+	var tween := create_tween()
 	tween.tween_property(sprite_control, "modulate", color, 0.1)
 	tween.tween_property(sprite_control, "modulate", Color.WHITE, 0.2)
 
@@ -498,8 +484,8 @@ func _flash_sprite(sprite_control: Control, color: Color) -> void:
 func _dodge_anim(sprite_control: Control) -> void:
 	if not sprite_control:
 		return
-	var orig_pos = sprite_control.position
-	var tween = create_tween()
+	var orig_pos := sprite_control.position
+	var tween := create_tween()
 	tween.tween_property(sprite_control, "position:x", orig_pos.x + 20, 0.1)
 	tween.tween_property(sprite_control, "position:x", orig_pos.x, 0.15)
 
@@ -512,14 +498,13 @@ func _set_action_buttons_enabled(enabled: bool) -> void:
 
 
 func _style_action_buttons() -> void:
-	UIThemeSetup.style_button(atk_btn, Color(0.8, 0.25, 0.2), 6)
-	UIThemeSetup.style_button(def_btn, Color(0.2, 0.45, 0.8), 6)
-	UIThemeSetup.style_button(heal_btn, Color(0.2, 0.7, 0.3), 6)
-	UIThemeSetup.style_button(flee_btn, UIThemeSetup.BG_LIGHT, 6)
+	UIThemeSetup.style_button(atk_btn,  Color(0.8, 0.25, 0.2), 6)
+	UIThemeSetup.style_button(def_btn,  Color(0.2, 0.45, 0.8), 6)
+	UIThemeSetup.style_button(heal_btn, Color(0.2, 0.7, 0.3),  6)
+	UIThemeSetup.style_button(flee_btn, UIThemeSetup.BG_LIGHT,  6)
 
 
 func _style_arena() -> void:
-	# HP bary
 	if enemy_hp_bar:
 		UIThemeSetup.style_progress_bar(enemy_hp_bar, Color(0.8, 0.2, 0.2), Color(0.25, 0.12, 0.12))
 	if player_hp_bar:
