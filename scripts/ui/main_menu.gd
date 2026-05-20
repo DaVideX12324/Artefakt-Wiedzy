@@ -19,7 +19,8 @@ func _ready() -> void:
 	stats_btn.pressed.connect(_on_stats)
 	quit_btn.pressed.connect(_on_quit)
 
-	load_game_btn.disabled = not FileAccess.file_exists(GameManager.SAVE_PATH)
+	var gm := CoreManager.get_singleton("GameManager")
+	load_game_btn.disabled = not FileAccess.file_exists(gm.SAVE_PATH) if gm else true
 
 	if stats_panel:
 		stats_panel.visible = false
@@ -95,12 +96,17 @@ func _add_subtitle() -> void:
 
 
 func _on_new_game() -> void:
-	GameManager.new_game()
+	var gm := CoreManager.get_singleton("GameManager")
+	if gm:
+		gm.new_game()
 
 
 func _on_load_game() -> void:
-	if GameManager.load_game():
-		GameManager.change_state(GameManager.GameState.EXPLORING)
+	var gm := CoreManager.get_singleton("GameManager")
+	if not gm:
+		return
+	if gm.load_game():
+		gm.change_state(gm.GameState.EXPLORING)
 	else:
 		push_warning("Nie udało się wczytać gry!")
 
@@ -116,6 +122,9 @@ func _populate_stats() -> void:
 	var stats_label = stats_panel.get_node_or_null("StatsLabel")
 	if not stats_label:
 		return
+	var ps := CoreManager.get_singleton("PlayerStats")
+	if not ps:
+		return
 	stats_label.text = """Statystyki gracza:
 Poziom: %d
 XP: %d / %d
@@ -126,14 +135,14 @@ Bledne: %d
 Seria: %d
 Nagrody: %d
 Trafnosc: %.0f%%""" % [
-		PlayerStats.level,
-		PlayerStats.xp, PlayerStats.xp_to_next_level(),
-		PlayerStats.hp, PlayerStats.max_hp,
-		PlayerStats.points,
-		PlayerStats.total_correct,
-		PlayerStats.total_wrong,
-		PlayerStats.best_streak,
-		PlayerStats.rewards.size(),
+		ps.level,
+		ps.xp, ps.xp_to_next_level(),
+		ps.hp, ps.max_hp,
+		ps.points,
+		ps.total_correct,
+		ps.total_wrong,
+		ps.best_streak,
+		ps.rewards.size(),
 		QuizManager.get_overall_accuracy() * 100,
 	]
 
