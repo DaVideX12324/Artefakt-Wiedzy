@@ -1,7 +1,7 @@
 [gd_scene format=3 uid="uid://26ghtedoardc"]
 
-[ext_resource type="Script" uid="uid://crs23rmo7rwua" path="res://scripts/ui/main_menu.gd" id="1_fe2o3"]
-[ext_resource type="PackedScene" path="res://scenes/ui/options_menu.tscn" id="2"]
+[ext_resource type="Script" uid="uid://bvlcri815olh6" path="res://scripts/ui/main_menu.gd" id="1_fe2o3"]
+[ext_resource type="PackedScene" uid="uid://bekjolfxecoun" path="res://scenes/ui/options_menu.tscn" id="2"]
 
 [node name="AWMainMenu" type="CanvasLayer" unique_id=1774396082]
 process_mode = 3
