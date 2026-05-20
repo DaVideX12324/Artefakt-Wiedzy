@@ -1,0 +1,108 @@
+[gd_scene format=3 uid="uid://26ghtedoardc"]
+
+[ext_resource type="Script" uid="uid://crs23rmo7rwua" path="res://scripts/ui/main_menu.gd" id="1_fe2o3"]
+[ext_resource type="PackedScene" path="res://scenes/ui/options_menu.tscn" id="2"]
+
+[node name="AWMainMenu" type="CanvasLayer" unique_id=1774396082]
+process_mode = 3
+script = ExtResource("1_fe2o3")
+
+[node name="BG" type="ColorRect" parent="." unique_id=1728240187]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.05, 0.05, 0.09, 1)
+
+[node name="Center" type="CenterContainer" parent="." unique_id=943178328]
+texture_filter = 2
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Panel" type="PanelContainer" parent="Center" unique_id=1941946755]
+layout_mode = 2
+
+[node name="Margin" type="MarginContainer" parent="Center/Panel" unique_id=301888751]
+layout_mode = 2
+theme_override_constants/margin_left = 40
+theme_override_constants/margin_top = 32
+theme_override_constants/margin_right = 40
+theme_override_constants/margin_bottom = 32
+
+[node name="VBox" type="VBoxContainer" parent="Center/Panel/Margin" unique_id=1103717972]
+layout_mode = 2
+theme_override_constants/separation = 12
+alignment = 1
+
+[node name="Title" type="Label" parent="Center/Panel/Margin/VBox" unique_id=1863241891]
+layout_mode = 2
+theme_override_font_sizes/font_size = 32
+text = "Artefakt Wiedzy"
+horizontal_alignment = 1
+
+[node name="Subtitle" type="Label" parent="Center/Panel/Margin/VBox" unique_id=1236308642]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.6, 0.7, 0.85, 1)
+theme_override_font_sizes/font_size = 14
+text = "Wybierz modul"
+horizontal_alignment = 1
+
+[node name="Sep1" type="HSeparator" parent="Center/Panel/Margin/VBox" unique_id=895873304]
+layout_mode = 2
+
+[node name="BtnBitBomber" type="Button" parent="Center/Panel/Margin/VBox" unique_id=902409046]
+custom_minimum_size = Vector2(320, 56)
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 0.85, 0.3, 1)
+text = "💣 BitBomber
+Gra edukacyjna bomberman"
+
+[node name="BtnQuizRPG" type="Button" parent="Center/Panel/Margin/VBox" unique_id=853266100]
+custom_minimum_size = Vector2(320, 56)
+layout_mode = 2
+theme_override_colors/font_color = Color(0.4, 0.9, 0.7, 1)
+text = "📖 Quiz RPG
+Ucz sie, zdobywaj XP"
+
+[node name="Sep2" type="HSeparator" parent="Center/Panel/Margin/VBox" unique_id=305544954]
+layout_mode = 2
+
+[node name="HBoxMeta" type="HBoxContainer" parent="Center/Panel/Margin/VBox" unique_id=777073512]
+layout_mode = 2
+theme_override_constants/separation = 8
+alignment = 1
+
+[node name="BtnOptions" type="Button" parent="Center/Panel/Margin/VBox/HBoxMeta" unique_id=150541323]
+custom_minimum_size = Vector2(154, 36)
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Ustawienia"
+
+[node name="BtnQuit" type="Button" parent="Center/Panel/Margin/VBox/HBoxMeta" unique_id=1123826961]
+custom_minimum_size = Vector2(154, 36)
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_colors/font_color = Color(1, 0.4, 0.4, 1)
+text = "✕ Wyjscie"
+
+[node name="VerLabel" type="Label" parent="." unique_id=237067958]
+anchors_preset = 3
+anchor_left = 1.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -140.0
+offset_top = -28.0
+offset_right = -8.0
+offset_bottom = -6.0
+grow_horizontal = 0
+grow_vertical = 0
+theme_override_colors/font_color = Color(0.35, 0.35, 0.4, 1)
+text = "Artefakt Wiedzy v0.1-dev"
+horizontal_alignment = 2
+
+[node name="OptionsMenu" parent="." unique_id=404120494 instance=ExtResource("2")]
