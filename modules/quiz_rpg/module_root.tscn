@@ -1,0 +1,6 @@
+[gd_scene format=3 uid="uid://quiz_rpg_module_root"]
+
+[ext_resource type="Script" path="res://modules/quiz_rpg/module_root.gd" id="1"]
+
+[node name="QuizRPGModule" type="Node"]
+script = ExtResource("1")
